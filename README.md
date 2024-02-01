@@ -14,4 +14,6 @@ GET    /status       # 服务状态
 1. 抓包获得[配置](./init/config.json)所需信息
 2. 部署到服务器
 3. 配置iOS捷径
-![捷径配置](./example.png)
+![捷径配置](./doc/example.png)
+4. 添加定时运行iOS捷径
+![定时运行](./doc/example2.png)
