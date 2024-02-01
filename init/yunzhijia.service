@@ -1,0 +1,14 @@
+[Unit]
+Description=Yzj Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=nogroup
+LimitNOFILE=32768
+Restart=on-failure
+ExecStart=/usr/local/bin/yunzhijia --c=/etc/yunzhijia/config.json
+
+[Install]
+WantedBy=multi-user.target
