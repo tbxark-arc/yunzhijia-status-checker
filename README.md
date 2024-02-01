@@ -12,8 +12,17 @@ GET    /status       # 服务状态
 ## 使用方法
 
 1. 抓包获得[配置](./init/config.json)所需信息
-2. 部署到服务器
-3. 配置iOS捷径
-![捷径配置](./doc/example.png)
-4. 添加定时运行iOS捷径
-![定时运行](./doc/example2.png)
+   
+3. 部署到服务器
+
+4. 配置iOS捷径
+<details>
+<summary>展开捷径配置</summary>
+<img style="max-width: 600px;" alt="image" src="./doc/example.png">
+</details>
+
+5. 添加定时运行iOS捷径
+<details>
+<summary>展开自动化配置</summary>
+<img style="max-width: 600px;" alt="image" src="./doc/example2.png">
+</details>
