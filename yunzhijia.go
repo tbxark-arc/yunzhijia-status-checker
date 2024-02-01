@@ -104,6 +104,7 @@ func fetchTicket(token string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	defer resp.Body.Close()
 
 	data := YzjResponse[TicketContainer]{}
 	err = json.NewDecoder(resp.Body).Decode(&data)
@@ -136,10 +137,10 @@ func fetchClockInFlow(oid, appid, ticket, date string) (*ClockInFlowFlow, error)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
-
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	data := YzjResponse[ClockInFlowFlow]{}
 	err = json.NewDecoder(resp.Body).Decode(&data)
