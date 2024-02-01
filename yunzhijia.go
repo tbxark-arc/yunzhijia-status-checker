@@ -81,9 +81,9 @@ func (y *YunZhiJia) IsClockInToday(t ClockInTimeType) (bool, error) {
 			}
 			//log.Printf("%s: %+v", t, v.TimePoint)
 			if t == ClockInTimeTypeStart {
-				return v.TimePoint.ClockInTime < v.TimePoint.WorkTime, nil
+				return v.TimePoint.ClockInTime <= v.TimePoint.WorkTime, nil
 			} else {
-				return v.TimePoint.ClockInTime > v.TimePoint.WorkTime, nil
+				return v.TimePoint.ClockInTime >= v.TimePoint.WorkTime, nil
 			}
 		}
 	}
