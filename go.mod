@@ -1,4 +1,4 @@
-module yunzhijia
+module github.com/TBXark/yunzhijia-status-checker
 
 go 1.21
 
