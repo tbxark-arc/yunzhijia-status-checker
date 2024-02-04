@@ -21,6 +21,7 @@ type TicketContainer struct {
 
 type ClockInFlowFlow struct {
 	HasRule      bool `json:"hasRule"`
+	Rest         bool `json:"rest"`
 	SignDataList []struct {
 		TimePoint struct {
 			WorkTime      int64  `json:"workTime"`
@@ -48,9 +49,7 @@ func NewYunZhiJia(token, oid, appid string) *YunZhiJia {
 	return &YunZhiJia{token: token, oid: oid, appid: appid}
 }
 
-func (y *YunZhiJia) ClockInFlow() (*ClockInFlowFlow, error) {
-	today := time.Now()
-	date := fmt.Sprintf("%d-%02d-%02d", today.Year(), today.Month(), today.Day())
+func (y *YunZhiJia) ClockInFlowForDate(date string) (*ClockInFlowFlow, error) {
 	ticket, err := fetchTicket(y.token)
 	if err != nil {
 		log.Printf("fetch ticket error: %v", err)
@@ -62,7 +61,12 @@ func (y *YunZhiJia) ClockInFlow() (*ClockInFlowFlow, error) {
 		return nil, err
 	}
 	return flow, nil
+}
 
+func (y *YunZhiJia) ClockInFlow() (*ClockInFlowFlow, error) {
+	today := time.Now()
+	date := fmt.Sprintf("%d-%02d-%02d", today.Year(), today.Month(), today.Day())
+	return y.ClockInFlowForDate(date)
 }
 
 func (y *YunZhiJia) IsClockInToday(t ClockInTimeType) (bool, error) {
@@ -70,9 +74,12 @@ func (y *YunZhiJia) IsClockInToday(t ClockInTimeType) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	if !flow.HasRule {
-		return true, nil
-	}
+	//if !flow.HasRule {
+	//	return true, nil
+	//}
+	//if flow.Rest {
+	//	return true, nil
+	//}
 	//log.Printf("type: %s, flow: %+v", t, flow)
 	for _, v := range flow.SignDataList {
 		if v.TimePoint.TimePointType == string(t) {
@@ -87,7 +94,7 @@ func (y *YunZhiJia) IsClockInToday(t ClockInTimeType) (bool, error) {
 			}
 		}
 	}
-	return false, nil
+	return true, nil
 }
 
 func fetchTicket(token string) (string, error) {
