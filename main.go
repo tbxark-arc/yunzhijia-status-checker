@@ -46,7 +46,7 @@ func loadConfig(path string) (*Config, error) {
 
 func main() {
 
-	cfg := flag.String("c", "config.json", "config file")
+	cfg := flag.String("config", "config.json", "config file")
 	flag.Parse()
 
 	config, err := loadConfig(*cfg)
