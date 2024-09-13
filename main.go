@@ -5,7 +5,9 @@ import (
 	"flag"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
 	"os"
+	"strings"
 )
 
 type Config struct {
@@ -15,20 +17,42 @@ type Config struct {
 	AppId   string `json:"appid"`
 }
 
+func loadConfig(path string) (*Config, error) {
+	if strings.HasPrefix(path, "http") {
+		resp, err := http.Get(path)
+		if err != nil {
+			return nil, err
+		}
+		defer resp.Body.Close()
+		config := &Config{}
+		err = json.NewDecoder(resp.Body).Decode(config)
+		if err != nil {
+			return nil, err
+		}
+		return config, nil
+	} else {
+		bytes, err := os.ReadFile(path)
+		if err != nil {
+			log.Fatal(err)
+		}
+		config := &Config{}
+		err = json.Unmarshal(bytes, config)
+		if err != nil {
+			return nil, err
+		}
+		return config, nil
+	}
+}
+
 func main() {
 
 	cfg := flag.String("c", "config.json", "config file")
 	flag.Parse()
-	bytes, err := os.ReadFile(*cfg)
+
+	config, err := loadConfig(*cfg)
 	if err != nil {
-		log.Panicf("read config file error: %v", err)
+		log.Fatal(err)
 	}
-	config := &Config{}
-	err = json.Unmarshal(bytes, config)
-	if err != nil {
-		log.Panicf("parse config file error: %v", err)
-	}
-	log.Printf("config: %+v", config)
 
 	yzj := NewYunZhiJia(config.Token, config.Oid, config.AppId)
 	server := gin.Default()
