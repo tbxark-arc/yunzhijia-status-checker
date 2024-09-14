@@ -3,12 +3,16 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"github.com/gin-gonic/gin"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
+
+var BuildVersion = "dev"
 
 type Config struct {
 	Token   string `json:"token"`
@@ -47,7 +51,14 @@ func loadConfig(path string) (*Config, error) {
 func main() {
 
 	cfg := flag.String("config", "config.json", "config file")
+	help := flag.Bool("help", false, "show help")
 	flag.Parse()
+
+	if *help {
+		fmt.Printf("version: %s\n", BuildVersion)
+		flag.Usage()
+		return
+	}
 
 	config, err := loadConfig(*cfg)
 	if err != nil {
