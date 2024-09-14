@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/tbxark/yunzhijia-status-checker:latest
+    image: ghcr.io/tbxark-arc/yunzhijia-status-checker:latest
     pull_policy: always
     volumes:
       - ./config.json:/config.json
