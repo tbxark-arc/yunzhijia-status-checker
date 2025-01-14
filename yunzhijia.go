@@ -87,7 +87,7 @@ func (y *YunZhiJia) IsClockInToday(t ClockInTimeType) (bool, error) {
 				if v.ClockInTime == 0 { // 未打卡
 					return false, nil
 				}
-				return v.ClockInTime < v.WorkTime, nil
+				return v.ClockInTime <= v.WorkTime, nil
 			case ClockInTimeTypeEnd:
 				if time.Now().UnixMilli() < v.WorkTime { // 未到下班时间
 					return true, nil
@@ -95,7 +95,7 @@ func (y *YunZhiJia) IsClockInToday(t ClockInTimeType) (bool, error) {
 				if v.ClockInTime == 0 { // 未打卡
 					return false, nil
 				}
-				return v.ClockInTime > v.WorkTime, nil
+				return v.ClockInTime >= v.WorkTime, nil
 			}
 		}
 	}
