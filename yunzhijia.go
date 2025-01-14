@@ -20,16 +20,16 @@ type TicketContainer struct {
 }
 
 type ClockInFlowFlow struct {
-	HasRule      bool `json:"hasRule"`
-	Rest         bool `json:"rest"`
-	SignDataList []struct {
-		TimePoint struct {
-			WorkTime      int64  `json:"workTime"`
-			ClockInTime   int64  `json:"clockInTime"`
-			TimePointType string `json:"timePointType"`
-		} `json:"timePoint"`
-	} `json:"signDataList"`
-	WorkHoursStr string `json:"workHoursStr"`
+	HasRule    bool `json:"hasRule"`
+	TimePoints []struct {
+		TimePointType ClockInTimeType `json:"timePointType"` // START_WORK/END_WORK
+
+		WorkTime int64 `json:"workTime"` // 签到期限
+
+		ClockInTime int64 `json:"clockInTime"` // 签到时间
+		HasTravel   int   `json:"hasTravel"`   // 休假
+		HasGoOut    int   `json:"hasGoOut"`    // 外出
+	} `json:"timePoints"`
 }
 
 type YunZhiJia struct {
@@ -74,23 +74,28 @@ func (y *YunZhiJia) IsClockInToday(t ClockInTimeType) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	//if !flow.HasRule {
-	//	return true, nil
-	//}
-	//if flow.Rest {
-	//	return true, nil
-	//}
-	//log.Printf("type: %s, flow: %+v", t, flow)
-	for _, v := range flow.SignDataList {
-		if v.TimePoint.TimePointType == string(t) {
-			if v.TimePoint.ClockInTime == 0 {
-				return false, nil
+	if !flow.HasRule {
+		return true, nil
+	}
+	for _, v := range flow.TimePoints {
+		if v.TimePointType == t {
+			if v.HasTravel == 1 || v.HasGoOut == 1 { // 休假或外出
+				return true, nil
 			}
-			//log.Printf("%s: %+v", t, v.TimePoint)
-			if t == ClockInTimeTypeStart {
-				return v.TimePoint.ClockInTime <= v.TimePoint.WorkTime, nil
-			} else {
-				return v.TimePoint.ClockInTime >= v.TimePoint.WorkTime, nil
+			switch v.TimePointType {
+			case ClockInTimeTypeStart:
+				if v.ClockInTime == 0 { // 未打卡
+					return false, nil
+				}
+				return v.ClockInTime < v.WorkTime, nil
+			case ClockInTimeTypeEnd:
+				if time.Now().UnixMilli() < v.WorkTime { // 未到下班时间
+					return true, nil
+				}
+				if v.ClockInTime == 0 { // 未打卡
+					return false, nil
+				}
+				return v.ClockInTime > v.WorkTime, nil
 			}
 		}
 	}
