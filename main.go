@@ -1,14 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
-	"net/http"
-	"os"
-	"strings"
 
+	"github.com/TBXark/confstore"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,36 +18,9 @@ type Config struct {
 	AppId   string `json:"appid"`
 }
 
-func loadConfig(path string) (*Config, error) {
-	if strings.HasPrefix(path, "http") {
-		resp, err := http.Get(path)
-		if err != nil {
-			return nil, err
-		}
-		defer resp.Body.Close()
-		config := &Config{}
-		err = json.NewDecoder(resp.Body).Decode(config)
-		if err != nil {
-			return nil, err
-		}
-		return config, nil
-	} else {
-		bytes, err := os.ReadFile(path)
-		if err != nil {
-			log.Fatal(err)
-		}
-		config := &Config{}
-		err = json.Unmarshal(bytes, config)
-		if err != nil {
-			return nil, err
-		}
-		return config, nil
-	}
-}
-
 func main() {
 
-	cfg := flag.String("config", "config.json", "config file")
+	conf := flag.String("config", "config.json", "config file")
 	help := flag.Bool("help", false, "show help")
 	flag.Parse()
 
@@ -60,7 +30,7 @@ func main() {
 		return
 	}
 
-	config, err := loadConfig(*cfg)
+	config, err := confstore.Load[Config](*conf)
 	if err != nil {
 		log.Fatal(err)
 	}

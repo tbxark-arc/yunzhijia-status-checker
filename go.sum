@@ -1,3 +1,5 @@
+github.com/TBXark/confstore v0.0.0-20250123065822-f224518502e3 h1:ZjqHMo5/qClZzMRj5F39tJ2lFcar1sXNv0T9HzsiAME=
+github.com/TBXark/confstore v0.0.0-20250123065822-f224518502e3/go.mod h1:TOxM19Snt9wT02PJzyz66sgq7sWhr4AFzPEZIKvVnTE=
 github.com/bytedance/sonic v1.5.0/go.mod h1:ED5hyg4y6t3/9Ku1R6dU/4KyJ48DZ4jPhfY1O2AihPM=
 github.com/bytedance/sonic v1.9.1 h1:6iJ6NqdoxCDr6mbY8h18oSO+cShGSMRGCEo7F2h0x8s=
 github.com/bytedance/sonic v1.9.1/go.mod h1:i736AoUSYt75HyZLoJW9ERYxcy6eaN6h4BZXU064P/U=

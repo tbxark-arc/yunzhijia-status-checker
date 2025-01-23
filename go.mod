@@ -1,8 +1,13 @@
 module github.com/TBXark/yunzhijia-status-checker
 
-go 1.21
+go 1.23
 
-require github.com/gin-gonic/gin v1.9.1
+toolchain go1.23.5
+
+require (
+	github.com/TBXark/confstore v0.0.0-20250123065822-f224518502e3
+	github.com/gin-gonic/gin v1.9.1
+)
 
 require (
 	github.com/bytedance/sonic v1.9.1 // indirect
