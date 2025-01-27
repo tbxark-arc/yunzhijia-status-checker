@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -29,6 +30,7 @@ type ClockInFlowFlow struct {
 		ClockInTime int64 `json:"clockInTime"` // 签到时间
 		HasTravel   int   `json:"hasTravel"`   // 休假
 		HasGoOut    int   `json:"hasGoOut"`    // 外出
+		HasLeave    bool  `json:"hasLeave"`    // 请假
 	} `json:"timePoints"`
 }
 
@@ -79,7 +81,7 @@ func (y *YunZhiJia) IsClockInToday(t ClockInTimeType) (bool, error) {
 	}
 	for _, v := range flow.TimePoints {
 		if v.TimePointType == t {
-			if v.HasTravel == 1 || v.HasGoOut == 1 { // 休假或外出
+			if v.HasTravel == 1 || v.HasGoOut == 1 || v.HasLeave { // 休假或外出
 				return true, nil
 			}
 			switch v.TimePointType {
@@ -154,8 +156,13 @@ func fetchClockInFlow(oid, appid, ticket, date string) (*ClockInFlowFlow, error)
 	}
 	defer resp.Body.Close()
 
+	respRaw, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
 	data := YzjResponse[ClockInFlowFlow]{}
-	err = json.NewDecoder(resp.Body).Decode(&data)
+	err = json.Unmarshal(respRaw, &data)
 	if err != nil {
 		return nil, err
 	}
